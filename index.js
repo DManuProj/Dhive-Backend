@@ -15,7 +15,14 @@ const PORT = process.env.PORT || 5000;
 dbConnection();
 
 app.use(helmet());
-app.use(cors());
+// app.use(cors());
+const corsOptions = {
+  origin: "http://dihive.s3-website.ap-south-1.amazonaws.com",
+  methods: "GET,POST,PUT,DELETE,OPTIONS",
+  allowedHeaders:
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization",
+};
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json({ limit: "10mb" }));
