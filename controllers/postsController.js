@@ -140,7 +140,7 @@ const stats = async (req, res, next) => {
     });
   } catch (error) {
     console.log(error);
-    res.status(404).json({ message: error.message });
+    res.status(500).json({ message: "Something went wrong!!" });
   }
 };
 
@@ -174,7 +174,7 @@ const getFollowers = async (req, res, next) => {
     });
   } catch (error) {
     console.log(error);
-    res.status(404).json({ message: error.message });
+    res.status(500).json({ message: "Something went wrong!!" });
   }
 };
 
@@ -208,7 +208,7 @@ const getPostContent = async (req, res, next) => {
     });
   } catch (error) {
     console.log(error);
-    res.status(404).json({ message: error.message });
+    res.status(500).json({ message: "Something went wrong!!" });
   }
 };
 
@@ -239,7 +239,7 @@ const createPost = async (req, res, next) => {
     });
   } catch (error) {
     console.log(error);
-    res.status(404).json({ message: error.message });
+    res.status(500).json({ message: "Something went wrong!!" });
   }
 };
 
@@ -273,11 +273,11 @@ const commentPost = async (req, res, next) => {
     });
   } catch (error) {
     console.log(error);
-    res.status(404).json({ message: error.message });
+    res.status(500).json({ message: "Something went wrong!!" });
   }
 };
 
-const updatePost = async (req, res, next) => {
+const updatePostStatus = async (req, res, next) => {
   try {
     const { id } = req.params;
     const { status } = req.body;
@@ -342,7 +342,7 @@ const getAllPosts = async (req, res, next) => {
     });
   } catch (error) {
     console.log(error);
-    res.status(404).json({ message: error.message });
+    res.status(500).json({ message: "Something went wrong!!" });
   }
 };
 
@@ -364,7 +364,7 @@ const getComments = async (req, res, next) => {
     });
   } catch (error) {
     console.log(error);
-    res.status(404).json({ message: error.message });
+    res.status(500).json({ message: "Something went wrong!!" });
   }
 };
 
@@ -442,12 +442,11 @@ const getPopularContents = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      message: "Successful",
       data: { posts, writers },
     });
   } catch (error) {
     console.log(error);
-    res.status(404).json({ message: error.message });
+    res.status(500).json({ message: "Something went wrong" });
   }
 };
 
@@ -471,29 +470,74 @@ const getPost = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      message: "Successful",
       data: post,
     });
   } catch (error) {
     console.log(error);
-    res.status(404).json({ message: error.message });
+    res.status(500).json({ message: "Something went wrong!!" });
   }
 };
 
 const deletePost = async (req, res, next) => {
   try {
     const { userId } = req.body.user;
-    const { id } = req.params;
+    const { postId } = req.params;
 
-    await postSchema.findOneAndDelete({ _id: id, user: userId });
+    const deletedPost = await postSchema.findOneAndDelete({
+      _id: postId,
+      user: userId,
+    });
 
     res.status(200).json({
       success: true,
-      message: "Deleted successfully",
+      message: "Post deleted successfully",
     });
   } catch (error) {
     console.log(error);
-    res.status(404).json({ message: error.message });
+    res.status(500).json({ message: "Something went wrong!!" });
+  }
+};
+
+const updatePost = async (req, res, next) => {
+  try {
+    const { postId } = req.params;
+    const { userId } = req.body.user;
+
+    const post = await postSchema.findOne({ _id: postId });
+
+    if (!post) {
+      return res.status(404).json({
+        success: false,
+        message: "Post not found",
+      });
+    }
+
+    const { title, img, description, category } = req.body;
+
+    if (!(title || img || description || category)) {
+      return next("Please provide all required field");
+    }
+
+    const updatePost = {
+      title,
+      img,
+      description,
+      _id: postId,
+      category,
+    };
+
+    const updatedPost = await postSchema.findByIdAndUpdate(postId, updatePost, {
+      new: true,
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Post updated successfully",
+      updatedPost,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Something went wrong" });
   }
 };
 
@@ -518,15 +562,13 @@ const deleteComment = async (req, res, next) => {
     }
   } catch (error) {
     console.log(error);
-    res.status(404).json({ message: error.message });
+    res.status(500).json({ message: "Something went wrong!!" });
   }
 };
 const updateComment = async (req, res, next) => {
   try {
     const { id } = req.params;
     const { editComment } = req.body;
-
-    console.log("Updating comment", { id, editComment });
 
     // Update the comment by its ID
     const updatedComment = await commentSchema.findByIdAndUpdate(
@@ -546,7 +588,7 @@ const updateComment = async (req, res, next) => {
     });
   } catch (error) {
     console.error("Error updating comment", error);
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: "Something went wrong!!" });
   }
 };
 
@@ -564,4 +606,5 @@ module.exports = {
   updatePost,
   getComments,
   updateComment,
+  updatePostStatus,
 };
