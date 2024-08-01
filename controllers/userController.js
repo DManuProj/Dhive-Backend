@@ -20,7 +20,7 @@ const OTPVerification = async (req, res, next) => {
     if (expiredAt < Date.now()) {
       await VerificationSchema.findOneAndDelete({ userId });
 
-      res.status(404).json({ message: "Verification code has expired" });
+      res.status(410).json({ message: "Verification code has expired" });
     } else {
       const isMatch = await compareString(otp, token);
 
@@ -41,7 +41,7 @@ const OTPVerification = async (req, res, next) => {
           message: "Email verified successfully",
         });
       } else {
-        return res.status(404).json({
+        return res.status(400).json({
           success: false,
           message: "Verification failed or OTP is invalid",
         });
@@ -49,7 +49,7 @@ const OTPVerification = async (req, res, next) => {
     }
   } catch (error) {
     console.log(error);
-    return res.status(404).json({ message: "Something went wrong" });
+    return res.status(500).json({ message: "Something went wrong" });
   }
 };
 
@@ -68,7 +68,7 @@ const resentOTP = async (req, res, next) => {
     await sendVerificationEmail(user, res, token);
   } catch (error) {
     console.log(error);
-    res.status(404).json({ message: "Something went wrong" });
+    res.status(500).json({ message: "Something went wrong" });
   }
 };
 
@@ -102,7 +102,7 @@ const followWriter = async (req, res, next) => {
     });
   } catch (error) {
     console.log(error);
-    res.status(404).json({ message: "Something went wrong" });
+    res.status(500).json({ message: "Something went wrong" });
   }
 };
 const unfollowWriter = async (req, res, next) => {
@@ -195,7 +195,7 @@ const updateUser = async (req, res, next) => {
     });
   } catch (error) {
     console.log(error);
-    res.status(404).json({ message: "Something went wrong" });
+    res.status(500).json({ message: "Something went wrong" });
   }
 };
 
@@ -235,7 +235,7 @@ const resetPassword = async (req, res, next) => {
     });
   } catch (error) {
     console.log(error);
-    res.status(404).json({ message: "Something went wrong" });
+    res.status(500).json({ message: "Something went wrong" });
   }
 };
 
@@ -262,7 +262,7 @@ const getWriter = async (req, res, next) => {
     });
   } catch (error) {
     console.log(error);
-    res.status(404).json({ message: "Something went wrong" });
+    res.status(500).json({ message: "Something went wrong" });
   }
 };
 const getUser = async (req, res, next) => {
@@ -285,7 +285,7 @@ const getUser = async (req, res, next) => {
     });
   } catch (error) {
     console.log(error);
-    res.status(404).json({ message: "Something went wrong" });
+    res.status(500).json({ message: "Something went wrong" });
   }
 };
 
