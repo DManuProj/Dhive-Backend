@@ -47,7 +47,7 @@ const userSignup = async (req, res, next) => {
     }
   } catch (error) {
     console.log(error);
-    res.status(404).json({ message: "email is not valid" });
+    res.status(400).json({ message: "email is not valid" });
   }
 };
 
