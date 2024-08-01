@@ -2,7 +2,6 @@ const JWT = require("jsonwebtoken");
 
 const authMiddleware = async (req, res, next) => {
   const authHeader = req?.headers?.authorization;
-  console.log("authHEader", authHeader);
 
   if (!authHeader || !authHeader?.startsWith("Bearer")) {
     next("Authentication failed");

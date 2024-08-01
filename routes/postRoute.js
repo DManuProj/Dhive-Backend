@@ -16,7 +16,8 @@ router.post("/comment/:id", userAuth, postController.commentPost);
 router.patch("/comment/:id/", userAuth, postController.updateComment);
 
 //update post
-router.patch("/update/:id", userAuth, postController.updatePost);
+router.patch("/update/:id", userAuth, postController.updatePostStatus);
+router.patch("/update-post/:postId", userAuth, postController.updatePost);
 
 //get posts
 router.get("/", postController.getAllPosts);
