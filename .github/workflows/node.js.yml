@@ -32,4 +32,5 @@ jobs:
         echo "AUTH_PASSWORD=${{ secrets.AUTH_PASSWORD }}" >> .env
         echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> .env
         echo "PORT=${{ secrets.PORT }}" >> .env
+        
     - run: pm2 restart api
