@@ -77,7 +77,7 @@ const followWriter = async (req, res, next) => {
     const followerId = req.body.user.userId;
     const { id } = req.params;
 
-    const checks = await followersSchema.findOne({ followerId });
+    const checks = await followersSchema.findOne({ followerId, writerId: id });
 
     if (checks) {
       return res.status(201).json({
@@ -92,26 +92,26 @@ const followWriter = async (req, res, next) => {
       writerId: id,
     });
 
-    writer.followers.push(newFollower._id);
+    writer.followers.push(followerId);
 
-    await userSchema.findByIdAndUpdate(id, writer, { new: true });
+    await writer.save();
 
     res.status(201).json({
       success: true,
-      message: "You are now following this writer " + writer.name,
+      message: "You are now following " + writer.name,
     });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Something went wrong" });
   }
 };
-const unfollowWriter = async (req, res, next) => {
+
+const unFollowWriter = async (req, res, next) => {
   try {
     const followerId = req.body.user.userId;
     const { id } = req.params;
 
-    // Find the follower entry
-    const followerEntry = await followersSchema.findOne({
+    const followerEntry = await followersSchema.findOneAndDelete({
       followerId,
       writerId: id,
     });
@@ -123,26 +123,21 @@ const unfollowWriter = async (req, res, next) => {
       });
     }
 
-    // Find the writer
     const writer = await userSchema.findById(id);
 
     if (!writer) {
       return res.status(404).json({ message: "Writer not found" });
     }
 
-    // Remove the follower entry
-    await followersSchema.findByIdAndDelete(followerEntry._id);
-
-    // Remove follower from the writer's followers list
     writer.followers = writer.followers.filter(
-      (follower) => follower.toString() !== followerEntry._id.toString()
+      (follower) => follower.toString() !== followerId.toString()
     );
 
-    await userSchema.findByIdAndUpdate(id, writer, { new: true });
+    await writer.save();
 
     res.status(200).json({
       success: true,
-      message: "You have unfollowed this writer " + writer.name,
+      message: "You have unFollowed " + writer.name,
     });
   } catch (error) {
     console.log(error);
@@ -297,5 +292,5 @@ module.exports = {
   updateUser,
   getUser,
   resetPassword,
-  unfollowWriter,
+  unFollowWriter,
 };
