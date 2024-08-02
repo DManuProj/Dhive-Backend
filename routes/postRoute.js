@@ -23,7 +23,7 @@ router.patch("/update-post/:postId", userAuth, postController.updatePost);
 router.get("/", postController.getAllPosts);
 router.get("/popular", postController.getPopularContents);
 router.get("/:postId", postController.getPost);
-router.get("/comments/:postId", postController.getComments);
+// router.get("/comments/:postId", postController.getComments);
 
 //delete routes
 router.delete("/comment/:id/:postId", userAuth, postController.deleteComment);
