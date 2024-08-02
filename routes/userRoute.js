@@ -9,7 +9,7 @@ router.post("/resend-link/:userId", userController.resentOTP);
 
 //user routes
 router.post("/follower/:id", userAuth, userController.followWriter);
-router.delete("/follower/:id", userAuth, userController.unfollowWriter);
+router.delete("/follower/:id", userAuth, userController.unFollowWriter);
 
 router.put("/update-user", userAuth, userController.updateUser);
 router.put("/reset-password", userController.resetPassword);
