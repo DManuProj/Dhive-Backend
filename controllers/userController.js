@@ -77,14 +77,14 @@ const followWriter = async (req, res, next) => {
     const followerId = req.body.user.userId;
     const { id } = req.params;
 
-    const checks = await followersSchema.findOne({ followerId, writerId: id });
+    const checks = await followersSchema.findOne({ followerId });
 
-    if (checks) {
+    if (checks)
       return res.status(201).json({
         success: false,
-        message: "You are already following this writer",
+        message: "You're already following this writer.",
       });
-    }
+
     const writer = await userSchema.findById(id);
 
     const newFollower = await followersSchema.create({
@@ -92,17 +92,17 @@ const followWriter = async (req, res, next) => {
       writerId: id,
     });
 
-    writer.followers.push(followerId);
+    writer?.followers?.push(newFollower._id);
 
-    await writer.save();
+    await userSchema.findByIdAndUpdate(id, writer, { new: true });
 
     res.status(201).json({
       success: true,
-      message: "You are now following " + writer.name,
+      message: "You're now following writer " + writer?.name,
     });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: "Something went wrong" });
+    res.status(404).json({ message: error.message });
   }
 };
 
@@ -129,18 +129,19 @@ const unFollowWriter = async (req, res, next) => {
       return res.status(404).json({ message: "Writer not found" });
     }
 
+    // Remove the follower's schema entry _id from the writer's followers array
     writer.followers = writer.followers.filter(
-      (follower) => follower.toString() !== followerId.toString()
+      (follower) => follower.toString() !== followerEntry._id.toString()
     );
 
     await writer.save();
 
     res.status(200).json({
       success: true,
-      message: "You have unFollowed " + writer.name,
+      message: `You have unFollowed ${writer.name}`,
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({ message: "Something went wrong" });
   }
 };
@@ -246,7 +247,7 @@ const getWriter = async (req, res, next) => {
     if (!user) {
       return res
         .status(404)
-        .send({ success: false, message: "User not found" });
+        .send({ success: false, message: "Writer is not found" });
     }
 
     user.password = undefined;
@@ -264,7 +265,10 @@ const getUser = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    const user = await userSchema.findById(id);
+    const user = await userSchema.findById(id).populate({
+      path: "followers",
+      populate: { path: "followerId", select: "_id" },
+    });
 
     if (!user) {
       return res
