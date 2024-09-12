@@ -29,5 +29,5 @@ jobs:
         echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> .env
         echo "PORT=${{ secrets.PORT }}" >> .env   
         
-    - run: pm2 reload api
-    - run: pm2 flush
+    # - run: pm2 reload api
+    # - run: pm2 flush
