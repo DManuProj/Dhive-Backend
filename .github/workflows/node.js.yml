@@ -5,7 +5,7 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ "master" ]
+    branches: ["master"]
 
 jobs:
   build:
@@ -17,20 +17,21 @@ jobs:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - run: npm ci
-    - run: npm run build --if-present
-    - run: |
-        touch .env
-        echo "MONGODB_URL=${{ secrets.MONGODB_URL }}" >> .env
-        echo "AUTH_EMAIL=${{ secrets.AUTH_EMAIL }}" >> .env
-        echo "AUTH_PASSWORD=${{ secrets.AUTH_PASSWORD }}" >> .env
-        echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> .env
-        echo "PORT=${{ secrets.PORT }}" >> .env
-        
-    - run: pm2 restart api
+      - uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+      - run: npm ci
+      - run: npm run build --if-present
+      - run: |
+          touch .env
+          echo "MONGODB_URL=${{ secrets.MONGODB_URL }}" >> .env
+          echo "AUTH_EMAIL=${{ secrets.AUTH_EMAIL }}" >> .env
+          echo "AUTH_PASSWORD=${{ secrets.AUTH_PASSWORD }}" >> .env
+          echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> .env
+          echo "PORT=${{ secrets.PORT }}" >> .env
+
+      - run: pm2 restart api
+       - run: pm2 flush
