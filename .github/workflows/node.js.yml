@@ -34,4 +34,4 @@ jobs:
           echo "PORT=${{ secrets.PORT }}" >> .env
 
       - run: pm2 restart api
-       - run: pm2 flush
+      - run: pm2 flush
