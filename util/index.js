@@ -20,9 +20,7 @@ const compareString = async (string, hashedString) => {
     return isMatch;
   } catch (error) {
     console.log(error);
-    return res
-      .status(500)
-      .json({ message: "Something went wrong, please try again!" });
+    return false;
   }
 };
 

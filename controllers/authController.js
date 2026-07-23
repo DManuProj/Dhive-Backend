@@ -109,9 +109,10 @@ const login = async (req, res, next) => {
       return next("Please verify your email address");
     }
 
-    //google account login
+    //google / passwordless (OAuth) login — no password supplied
 
-    if (user.provider === "Google" && !password) {
+    if (!password) {
+      user.password = undefined;
       const token = createJWT(user?._id);
 
       res.status(200).json({
