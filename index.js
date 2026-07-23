@@ -24,6 +24,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use(routes);
 app.use(errorMiddleware);
 
-app.listen(PORT, () => {
-  console.log("Server running on port " + PORT);
-});
+// Only start a listening server when run directly (local dev, Render, Railway, etc.).
+// On Vercel the file is imported as a serverless function, so we export the app instead.
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log("Server running on port " + PORT);
+  });
+}
+
+module.exports = app;
