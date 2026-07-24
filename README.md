@@ -2,7 +2,7 @@
 
 RESTful API for **DHive**, a full-stack MERN blogging and publishing platform. Built with **Node.js, Express, and MongoDB**, it powers the two front-end apps in the [Dhive-Frontend](https://github.com/dulana-wanigathunga/Dhive-Frontend) repo.
 
-> **Live API:** `https://dhive-backend.vercel.app/api`
+> **Live API:** `https://dhive-backend.vercel.app/api` 
 
 ---
 
